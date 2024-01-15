@@ -6,3 +6,9 @@ exports.fetchTopicsData = () => {
     return result.rows;
   });
 };
+
+module.exports.fetchEndpoints = () => {
+  return fs.readFile(`${__dirname}/../endpoints.json`, "utf8").then((data) => {
+    return data;
+  });
+};

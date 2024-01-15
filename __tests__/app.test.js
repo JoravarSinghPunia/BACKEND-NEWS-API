@@ -3,6 +3,7 @@ const app = require("../Endpoints/app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
+const endpointsJsonFile = require("../endpoints.json");
 
 afterAll(() => {
   return db.end();
@@ -13,6 +14,18 @@ beforeEach(() => {
 });
 
 describe("app", () => {
+  describe("GET /api", () => {
+    test("200: Should return an object with keys showing all available endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then((response) => {
+          //console.log(response.body);
+          expect(response.body).toEqual(endpointsJsonFile);
+        });
+    });
+  });
+
   describe("GET /api/topics", () => {
     test("200: Should respond with an array of objects with slug and description keys", () => {
       return request(app)
