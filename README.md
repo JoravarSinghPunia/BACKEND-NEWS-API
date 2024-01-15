@@ -73,7 +73,7 @@ This will seed you database and create tables with their records.
 Once seeded, you can test the endpoints. To do so, run this command:
 
 ```JavaScript
-npm test PLACEHOLDER
+npm test app
 ```
 
 ### **If all tests pass, the API is ready to be deployed.**
