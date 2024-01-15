@@ -1,11 +1,16 @@
 const express = require("express");
 const app = express();
-const { getTopics } = require("../Controllers/topics.controllers");
-const { incorrectPathError } = require("../Errors/errorHandler");
+const { getTopics, getEndpoints } = require("../Controllers/get.controllers");
+const {
+  incorrectPathError,
+  psqlErrorHandler,
+} = require("../Errors/errorHandler");
 
 app.get("/api/topics", getTopics);
 
-// Error catcher
-app.all("/*", incorrectPathError);
+app.get("/api", getEndpoints);
+
+app.use(incorrectPathError);
+app.use(psqlErrorHandler);
 
 module.exports = app;
