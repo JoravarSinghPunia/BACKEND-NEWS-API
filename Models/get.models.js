@@ -25,7 +25,7 @@ module.exports.fetchArticlesByID = (article_id) => {
     });
 };
 
-exports.fetchAllArticles = (countCommentsByArticleId) => {
+module.exports.fetchAllArticles = (countCommentsByArticleId) => {
   return db
     .query(
       "SELECT author, title, article_id, topic, created_at, votes, article_img_url FROM articles ORDER BY created_at DESC"
@@ -48,12 +48,35 @@ exports.fetchAllArticles = (countCommentsByArticleId) => {
     });
 };
 
-exports.countCommentsByArticleId = (article_id) => {
+module.exports.countCommentsByArticleId = (article_id) => {
   return db
     .query("SELECT COUNT(comment_id) FROM comments WHERE article_id = $1", [
       article_id,
     ])
     .then((result) => {
       return result.rows[0];
+    });
+};
+
+exports.fetchCommentsById = (article_id) => {
+  return this.checkArticleExists(article_id).then(() => {
+    return db
+      .query(
+        "SELECT * FROM comments WHERE article_id = $1 ORDER by created_at DESC",
+        [article_id]
+      )
+      .then((result) => {
+        return result.rows;
+      });
+  });
+};
+
+exports.checkArticleExists = (article_id) => {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Article does not exist" });
+      }
     });
 };
