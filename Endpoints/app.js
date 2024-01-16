@@ -11,6 +11,6 @@ app.get("/api/topics", getTopics);
 app.get("/api", getEndpoints);
 
 app.use(incorrectPathError);
-app.use(psqlErrorHandler);
+// app.use(psqlErrorHandler);
 
 module.exports = app;

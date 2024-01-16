@@ -32,7 +32,9 @@ describe("app", () => {
         .get("/api/topics")
         .expect(200)
         .then((response) => {
-          response.body.topics.forEach((topic) => {
+          const topics = response.body.topics;
+          expect(topics.length).toBeGreaterThan(0);
+          topics.forEach((topic) => {
             expect(typeof topic.slug).toBe("string");
             expect(typeof topic.description).toBe("string");
             expect(topic).toHaveProperty("slug");
@@ -40,6 +42,9 @@ describe("app", () => {
           });
         });
     });
+  });
+
+  describe("Error Handling", () => {
     test("404: should return an error when given an unknown path", () => {
       return request(app)
         .get("/api/invalid")

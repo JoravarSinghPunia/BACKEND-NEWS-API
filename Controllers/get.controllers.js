@@ -7,8 +7,12 @@ module.exports.getTopics = (request, response, next) => {
 };
 
 module.exports.getEndpoints = (require, response, next) => {
-  fetchEndpoints().then((data) => {
-    const parsedData = JSON.parse(data);
-    response.status(200).send(parsedData);
-  });
+  fetchEndpoints()
+    .then((data) => {
+      const parsedData = JSON.parse(data);
+      response.status(200).send(parsedData);
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
