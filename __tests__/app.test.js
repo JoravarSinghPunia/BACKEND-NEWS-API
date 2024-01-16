@@ -61,7 +61,6 @@ describe("app", () => {
         .get("/api/articles/1")
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(body.article).toMatchObject(expectedOutput);
         });
     });
@@ -91,14 +90,12 @@ describe("app", () => {
         .get("/api/articles")
         .expect(200)
         .then((result) => {
-          console.log(result.body.articles);
           expect(result.body.articles).toHaveLength(13);
           expect(Array.isArray(result.body.articles)).toBe(true);
           expect(result.body.articles).toBeSortedBy("created_at", {
             descending: true,
           });
           result.body.articles.forEach((article) => {
-            console.log(result.body.articles);
             expect(article).toHaveProperty("author");
             expect(article).toHaveProperty("title");
             expect(article).toHaveProperty("article_id");
