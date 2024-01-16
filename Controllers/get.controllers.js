@@ -3,6 +3,8 @@ const {
   fetchTopicsData,
   fetchEndpoints,
   fetchArticlesByID,
+  fetchAllArticles,
+  countCommentsByArticleId,
 } = require("../Models/get.models");
 
 module.exports.getTopics = (request, response, next) => {
@@ -27,6 +29,16 @@ module.exports.getArticlesByArticleID = (request, response, next) => {
   fetchArticlesByID(article_id)
     .then((article) => {
       response.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports.getAllArticles = (request, response, next) => {
+  fetchAllArticles(countCommentsByArticleId)
+    .then((articles) => {
+      response.status(200).send({ articles });
     })
     .catch((err) => {
       next(err);
