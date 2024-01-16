@@ -4,13 +4,13 @@ const {
   getTopics,
   getEndpoints,
   getArticlesByArticleID,
+  getAllArticles,
 } = require("../Controllers/get.controllers");
 
 app.get("/api/topics", getTopics);
-
 app.get("/api", getEndpoints);
-
 app.get("/api/articles/:article_id", getArticlesByArticleID);
+app.get("/api/articles", getAllArticles);
 
 app.use((request, response, next) => {
   response.status(404).send({ msg: "Not Found" });

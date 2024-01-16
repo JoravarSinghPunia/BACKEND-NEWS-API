@@ -24,3 +24,36 @@ module.exports.fetchArticlesByID = (article_id) => {
       }
     });
 };
+
+exports.fetchAllArticles = (countCommentsByArticleId) => {
+  return db
+    .query(
+      "SELECT author, title, article_id, topic, created_at, votes, article_img_url FROM articles ORDER BY created_at DESC"
+    )
+    .then((result) => {
+      const articles = result.rows;
+
+      const promises = articles.map((article) => {
+        return countCommentsByArticleId(article.article_id).then(
+          ({ count }) => {
+            return {
+              ...article,
+              comment_count: Number(count),
+            };
+          }
+        );
+      });
+
+      return Promise.all(promises);
+    });
+};
+
+exports.countCommentsByArticleId = (article_id) => {
+  return db
+    .query("SELECT COUNT(comment_id) FROM comments WHERE article_id = $1", [
+      article_id,
+    ])
+    .then((result) => {
+      return result.rows[0];
+    });
+};

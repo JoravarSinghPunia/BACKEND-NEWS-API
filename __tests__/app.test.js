@@ -84,4 +84,40 @@ describe("app", () => {
         });
     });
   });
+
+  describe("GET /api/articles", () => {
+    test("200: Should return an array with all articles as objects. Each object with the correct keys", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((result) => {
+          console.log(result.body.articles);
+          expect(result.body.articles).toHaveLength(13);
+          expect(Array.isArray(result.body.articles)).toBe(true);
+          expect(result.body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
+          result.body.articles.forEach((article) => {
+            console.log(result.body.articles);
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("votes");
+            expect(article).toHaveProperty("article_img_url");
+            expect(article).toHaveProperty("comment_count");
+            expect(article).not.toHaveProperty("body");
+          });
+        });
+    });
+    test("404: Should receive message 'Not Found' when path is incorrect", () => {
+      return request(app)
+        .get("/api/invalid")
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("Not Found");
+        });
+    });
+  });
 });
