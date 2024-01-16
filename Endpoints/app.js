@@ -5,12 +5,14 @@ const {
   getEndpoints,
   getArticlesByArticleID,
   getAllArticles,
+  getCommentsById,
 } = require("../Controllers/get.controllers");
 
 app.get("/api/topics", getTopics);
 app.get("/api", getEndpoints);
 app.get("/api/articles/:article_id", getArticlesByArticleID);
 app.get("/api/articles", getAllArticles);
+app.get("/api/articles/:article_id/comments", getCommentsById);
 
 app.use((request, response, next) => {
   response.status(404).send({ msg: "Not Found" });

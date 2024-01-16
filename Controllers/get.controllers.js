@@ -5,6 +5,7 @@ const {
   fetchArticlesByID,
   fetchAllArticles,
   countCommentsByArticleId,
+  fetchCommentsById,
 } = require("../Models/get.models");
 
 module.exports.getTopics = (request, response, next) => {
@@ -39,6 +40,17 @@ module.exports.getAllArticles = (request, response, next) => {
   fetchAllArticles(countCommentsByArticleId)
     .then((articles) => {
       response.status(200).send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports.getCommentsById = (request, response, next) => {
+  const { article_id } = request.params;
+  fetchCommentsById(article_id)
+    .then((comments) => {
+      response.status(200).send({ comments });
     })
     .catch((err) => {
       next(err);

@@ -117,4 +117,51 @@ describe("app", () => {
         });
     });
   });
+
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("200: Should respond with an array of comments for given article_id requested with the most recent first", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then((result) => {
+          expect(result.body.comments).toHaveLength(11);
+          expect(Array.isArray(result.body.comments)).toBe(true);
+          expect(result.body.comments).toBeSortedBy("created_at", {
+            descending: true,
+          });
+          result.body.comments.forEach((comment) => {
+            expect(comment).toHaveProperty("comment_id");
+            expect(comment).toHaveProperty("body");
+            expect(comment).toHaveProperty("article_id");
+            expect(comment).toHaveProperty("created_at");
+            expect(comment).toHaveProperty("votes");
+            expect(comment).toHaveProperty("author");
+          });
+        });
+    });
+    test("200: Should respond with an empty array given category with no comments", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then((result) => {
+          expect(result.body.comments).toEqual([]);
+        });
+    });
+    test("400: responds with invalid id if invalid article id entered", () => {
+      return request(app)
+        .get("/api/articles/invalid/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Invalid ID" });
+        });
+    });
+    test("404: responds with article not found if valid but non-existent article id entered", () => {
+      return request(app)
+        .get("/api/articles/999999/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Article does not exist" });
+        });
+    });
+  });
 });
