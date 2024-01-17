@@ -6,28 +6,27 @@ const {
   getArticlesByArticleID,
   getAllArticles,
   getCommentsById,
-} = require("../Controllers/get.controllers");
+  postCommentToArticleId,
+} = require("../Controllers/news.controllers");
+const {
+  endpointErrors,
+  psqlErrors,
+  customErrors,
+  serverErrors,
+} = require("../Errors/errorHandler");
 
-app.get("/api/topics", getTopics);
+app.use(express.json());
+
 app.get("/api", getEndpoints);
+app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticlesByArticleID);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id/comments", getCommentsById);
+app.post("/api/articles/:article_id/comments", postCommentToArticleId);
 
-app.use((request, response, next) => {
-  response.status(404).send({ msg: "Not Found" });
-});
-
-app.use((err, request, response, next) => {
-  if (err.status) {
-    response.status(err.status).send({ msg: err.msg });
-  } else next(err);
-});
-
-app.use((err, request, response, next) => {
-  if (err.code === "22P02") {
-    response.status(400).send({ msg: "Invalid ID" });
-  }
-});
+app.all("*", endpointErrors);
+app.use(customErrors);
+app.use(psqlErrors);
+app.use(serverErrors);
 
 module.exports = app;
