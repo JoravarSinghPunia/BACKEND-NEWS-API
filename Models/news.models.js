@@ -1,7 +1,7 @@
 const db = require("../db/connection");
 const fs = require("fs/promises");
 
-exports.fetchTopicsData = () => {
+module.exports.fetchTopicsData = () => {
   return db.query(`SELECT * FROM topics;`).then((result) => {
     return result.rows;
   });
@@ -58,25 +58,62 @@ module.exports.countCommentsByArticleId = (article_id) => {
     });
 };
 
-exports.fetchCommentsById = (article_id) => {
-  return this.checkArticleExists(article_id).then(() => {
-    return db
-      .query(
-        "SELECT * FROM comments WHERE article_id = $1 ORDER by created_at DESC",
-        [article_id]
-      )
-      .then((result) => {
-        return result.rows;
-      });
-  });
+module.exports.fetchCommentsById = (article_id) => {
+  return this.checkArticleExists(article_id)
+    .then(() => {
+      return db
+        .query(
+          "SELECT * FROM comments WHERE article_id = $1 ORDER by created_at DESC",
+          [article_id]
+        )
+        .then((result) => {
+          return result.rows;
+        });
+    })
+    .catch((err) => {
+      if (err.status === 404) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      } else {
+        return Promise.reject(err);
+      }
+    });
 };
 
-exports.checkArticleExists = (article_id) => {
+module.exports.checkArticleExists = (article_id) => {
   return db
     .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
     .then((result) => {
       if (result.rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Article does not exist" });
+        return Promise.reject({ status: 404, msg: "Not Found" });
       }
+    });
+};
+
+exports.insertComment = (author, body, article_id) => {
+  return this.checkArticleExists(article_id)
+    .then(() => {
+      if (!author || !body || !article_id) {
+        return Promise.reject({ status: 400, msg: "Bad Request" });
+      }
+
+      return db.query(
+        `
+INSERT INTO comments
+    (author, body, article_id)
+VALUES
+    ($1,$2,$3)
+RETURNING comment_id, body, article_id, author, votes, created_at;
+`,
+        [author, body, article_id]
+      );
+    })
+    .then(({ rows }) => {
+      return rows[0];
+    })
+    .catch((err) => {
+      if (err.status === 404) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      }
+      return Promise.reject(err);
     });
 };

@@ -6,7 +6,8 @@ const {
   fetchAllArticles,
   countCommentsByArticleId,
   fetchCommentsById,
-} = require("../Models/get.models");
+  insertComment,
+} = require("../Models/news.models");
 
 module.exports.getTopics = (request, response, next) => {
   fetchTopicsData().then((topics) => {
@@ -51,6 +52,19 @@ module.exports.getCommentsById = (request, response, next) => {
   fetchCommentsById(article_id)
     .then((comments) => {
       response.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.postCommentToArticleId = (request, response, next) => {
+  const { article_id } = request.params;
+  const { username, body } = request.body;
+
+  insertComment(username, body, article_id)
+    .then((comments) => {
+      response.status(201).send({ comments });
     })
     .catch((err) => {
       next(err);

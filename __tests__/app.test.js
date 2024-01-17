@@ -69,8 +69,8 @@ describe("app", () => {
       return request(app)
         .get("/api/articles/invalid")
         .expect(400)
-        .then(({ body }) => {
-          expect(body).toEqual({ msg: "Invalid ID" });
+        .then((response) => {
+          expect(response.body.msg).toEqual("Bad Request");
         });
     });
 
@@ -152,15 +152,96 @@ describe("app", () => {
         .get("/api/articles/invalid/comments")
         .expect(400)
         .then(({ body }) => {
-          expect(body).toEqual({ msg: "Invalid ID" });
+          expect(body).toEqual({ msg: "Bad Request" });
         });
     });
     test("404: responds with article not found if valid but non-existent article id entered", () => {
       return request(app)
         .get("/api/articles/999999/comments")
         .expect(404)
-        .then(({ body }) => {
-          expect(body).toEqual({ msg: "Article does not exist" });
+        .then((response) => {
+          expect(response.body.msg).toEqual("Not Found");
+        });
+    });
+  });
+
+  describe("POST /api/articles/:article_id/comments", () => {
+    test("201: Should accept username and body keys, and respond with an array containing the posted comment", () => {
+      const addedComment = {
+        username: "icellusedkars",
+        body: "I hate streaming noses",
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(addedComment)
+        .expect(201)
+        .then((result) => {
+          expect(result.body.comments).toBeInstanceOf(Object);
+          expect(result.body.comments).toHaveProperty("comment_id", 19);
+          expect(result.body.comments).toHaveProperty(
+            "body",
+            "I hate streaming noses"
+          );
+          expect(result.body.comments).toHaveProperty("article_id", 1);
+          expect(result.body.comments).toHaveProperty("author");
+          expect(result.body.comments).toHaveProperty("votes", 0);
+          expect(result.body.comments).toHaveProperty("created_at");
+        });
+    });
+    test("400: Returns with 'Bad Request' if body, author or article ID key is missing", () => {
+      const addedComment = {
+        username: "icellusedkars",
+      };
+
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send(addedComment)
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("Bad Request");
+        });
+    });
+    test("404: Returns with 'Not Found' due to article not existing", () => {
+      const addedComment = {
+        username: "icellusedkars",
+        body: "I hate streaming noses",
+      };
+
+      return request(app)
+        .post("/api/articles/99999/comments")
+        .send(addedComment)
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("Not Found");
+        });
+    });
+    test("400: Returns 'Bad Request' when article_id is in incorrect formatting", () => {
+      const addedComment = {
+        username: "icellusedkars",
+        body: "I hate streaming noses",
+      };
+
+      return request(app)
+        .post("/api/articles/incorrectID/comments")
+        .send(addedComment)
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("Bad Request");
+        });
+    });
+    test("404: Returns with 'Not Found' if entered user does not exist", () => {
+      const addedComment = {
+        username: "ThisIsAFakeUsername",
+        body: "I hate streaming noses",
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(addedComment)
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("Not Found");
         });
     });
   });
