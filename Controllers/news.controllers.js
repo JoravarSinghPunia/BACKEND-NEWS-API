@@ -4,12 +4,12 @@ const {
   fetchEndpoints,
   fetchArticlesByID,
   fetchAllArticles,
-  countCommentsByArticleId,
   fetchCommentsById,
   insertComment,
   updateArticleById,
   removeCommentById,
   fetchUsers,
+  checkTopicExists,
 } = require("../Models/news.models");
 
 module.exports.getTopics = (request, response, next) => {
@@ -50,9 +50,20 @@ module.exports.getArticlesByArticleID = (request, response, next) => {
     });
 };
 
-module.exports.getAllArticles = (request, response, next) => {
-  fetchAllArticles(countCommentsByArticleId)
-    .then((articles) => {
+exports.getAllArticles = (request, response, next) => {
+  const { topic, sort_by, order } = request.query;
+  const fetchArticlesQuery = fetchAllArticles(topic, sort_by, order);
+
+  const queries = [fetchArticlesQuery];
+
+  if (topic) {
+    const checkTopicQuery = checkTopicExists(topic);
+    queries.push(checkTopicQuery);
+  }
+
+  Promise.all(queries)
+    .then((results) => {
+      const articles = results[0];
       response.status(200).send({ articles });
     })
     .catch((err) => {
