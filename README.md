@@ -1,8 +1,14 @@
-# **Northcoders backend API**
+# **Backend games API**
+
+## **Links**
+
+You can access the live version of this API here.
+
+To explore the endpoints in further detail, you can refer to the endpoints.json file
 
 ## **About**
 
-This is an API built for the purpose of accessing application data programmatically.
+The backend news API is a service built for the purpose of accessing application data programmatically. Modelled after real world backend services, such as Reddit, this api will deliver information to the front end architecture.
 
 ## **Instructions for running the program locally:**
 
