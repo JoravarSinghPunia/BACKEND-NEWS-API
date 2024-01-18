@@ -21,13 +21,18 @@ module.exports.fetchUsers = () => {
 
 module.exports.fetchArticlesByID = (article_id) => {
   return db
-    .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
-    .then((result) => {
-      if (result.rows.length === 0) {
+    .query(
+      `SELECT *, CAST((SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id) AS INTEGER) AS comment_count
+      FROM articles 
+      WHERE article_id = $1`,
+      [article_id]
+    )
+    .then((response) => {
+      const { rows } = response;
+      if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Not Found" });
-      } else {
-        return result.rows[0];
       }
+      return rows[0];
     });
 };
 

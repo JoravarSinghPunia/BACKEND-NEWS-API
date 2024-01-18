@@ -70,7 +70,7 @@ describe("app", () => {
   });
 
   describe("GET /api/articles/:article_id", () => {
-    test("200: Should return an object with author, title, article_id, body, topic, created_at, votes, article_img_url keys", () => {
+    test("200: Should return an object with author, title, article_id, body, topic, created_at, votes, article_img_url and comment_count keys", () => {
       const expectedOutput = {
         article_id: 1,
         title: "Living in the shadow of a great man",
@@ -81,6 +81,7 @@ describe("app", () => {
         votes: 100,
         article_img_url:
           "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        comment_count: 11,
       };
 
       return request(app)
