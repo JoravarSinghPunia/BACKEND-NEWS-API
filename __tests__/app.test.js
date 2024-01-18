@@ -3,6 +3,7 @@ const app = require("../Endpoints/app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
+const { forEach } = require("../db/data/test-data/articles");
 const endpointsJsonFile = require("../endpoints.json");
 
 afterAll(() => {
@@ -136,6 +137,55 @@ describe("app", () => {
     test("404: Should receive message 'Not Found' when path is incorrect", () => {
       return request(app)
         .get("/api/invalid")
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("Not Found");
+        });
+    });
+  });
+
+  describe("GET /api/articles (topic query)", () => {
+    test("200: Responds with an array of objects containing correct keys", () => {
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then((result) => {
+          expect(Array.isArray(result.body.articles)).toBe(true);
+          expect(result.body.articles).toHaveLength(1);
+          result.body.articles.forEach((article) => {
+            expect(article.topic).toBe("cats");
+            expect(article).toHaveProperty(
+              "title",
+              "UNCOVERED: catspiracy to bring down democracy"
+            );
+            expect(article).toHaveProperty("topic", "cats");
+            expect(article).toHaveProperty("author", "rogersop");
+            expect(article).toHaveProperty(
+              "created_at",
+              "2020-08-03T13:14:00.000Z"
+            );
+            expect(article).toHaveProperty("votes", 0);
+            expect(article).toHaveProperty(
+              "article_img_url",
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+            );
+          });
+        });
+    });
+    test("200: Should be able to filter articles by topic", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then((result) => {
+          expect(result.body.articles).toHaveLength(12);
+          result.body.articles.forEach((article) => {
+            expect(article.topic).toBe("mitch");
+          });
+        });
+    });
+    test("404: Responds with 'Not Found if topic does not exist", () => {
+      return request(app)
+        .get("/api/articles?topic=INVALID")
         .expect(404)
         .then((result) => {
           expect(result.body.msg).toBe("Not Found");

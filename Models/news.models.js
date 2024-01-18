@@ -31,27 +31,78 @@ module.exports.fetchArticlesByID = (article_id) => {
     });
 };
 
-module.exports.fetchAllArticles = (countCommentsByArticleId) => {
+module.exports.fetchAllArticles = (topic) => {
+  const queryValues = [];
+  let sqlQuery = `
+  SELECT author, title, article_id, topic, created_at, votes, article_img_url, CAST((SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id) AS INTEGER) AS comment_count FROM articles
+  `;
+  if (topic !== undefined) {
+    sqlQuery += ` WHERE topic = $1 `;
+    queryValues.push(topic);
+  }
+
+  sqlQuery += ` ORDER BY created_at DESC `;
+
+  return db.query(sqlQuery, queryValues).then((response) => {
+    const { rows } = response;
+    return rows;
+  });
+};
+
+module.exports.checkTopicExists = (topic) => {
   return db
     .query(
-      "SELECT author, title, article_id, topic, created_at, votes, article_img_url FROM articles ORDER BY created_at DESC"
+      `
+  SELECT * FROM topics
+  WHERE slug = $1
+  `,
+      [topic]
     )
-    .then((result) => {
-      const articles = result.rows;
-
-      const promises = articles.map((article) => {
-        return countCommentsByArticleId(article.article_id).then(
-          ({ count }) => {
-            return {
-              ...article,
-              comment_count: Number(count),
-            };
-          }
-        );
-      });
-
-      return Promise.all(promises);
+    .then(({ rows }) => {
+      if (rows.length === 0)
+        return Promise.reject({ status: 404, msg: "Not Found" });
     });
+};
+
+module.exports.fetchAllArticles = (
+  topic,
+  sort_by = "created_at",
+  order = "desc"
+) => {
+  const queryValues = [];
+  const validSortByQueries = [
+    "created_at",
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "body",
+    "votes",
+    "article_img_url",
+  ];
+  const validOrderQueries = ["asc", "desc"];
+
+  if (
+    !validSortByQueries.includes(sort_by) ||
+    !validOrderQueries.includes(order)
+  ) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+
+  let sqlQuery = `
+  SELECT author, title, article_id, topic, created_at, votes, article_img_url, CAST((SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id) AS INTEGER) AS comment_count FROM articles 
+  `;
+  if (topic !== undefined) {
+    sqlQuery += ` WHERE topic = $1 `;
+    queryValues.push(topic);
+  }
+
+  sqlQuery += ` ORDER BY ${sort_by} ${order} `;
+
+  return db.query(sqlQuery, queryValues).then((response) => {
+    const { rows } = response;
+    return rows;
+  });
 };
 
 module.exports.countCommentsByArticleId = (article_id) => {
