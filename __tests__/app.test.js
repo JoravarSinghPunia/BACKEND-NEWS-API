@@ -69,48 +69,6 @@ describe("app", () => {
     });
   });
 
-  describe("GET /api/articles/:article_id", () => {
-    test("200: Should return an object with author, title, article_id, body, topic, created_at, votes, article_img_url and comment_count keys", () => {
-      const expectedOutput = {
-        article_id: 1,
-        title: "Living in the shadow of a great man",
-        topic: "mitch",
-        author: "butter_bridge",
-        body: "I find this existence challenging",
-        created_at: "2020-07-09T20:11:00.000Z",
-        votes: 100,
-        article_img_url:
-          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-        comment_count: 11,
-      };
-
-      return request(app)
-        .get("/api/articles/1")
-        .expect(200)
-        .then(({ body }) => {
-          expect(body.article).toMatchObject(expectedOutput);
-        });
-    });
-
-    test("400: Should respond with Bad Request if user enters invalid id", () => {
-      return request(app)
-        .get("/api/articles/invalid")
-        .expect(400)
-        .then((response) => {
-          expect(response.body.msg).toEqual("Bad Request");
-        });
-    });
-
-    test("404: Should respond with Not Found if user enters valid but non-existent id", () => {
-      return request(app)
-        .get("/api/articles/11111")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body).toEqual({ msg: "Not Found" });
-        });
-    });
-  });
-
   describe("GET /api/articles", () => {
     test("200: Should return an array with all articles as objects. Each object with the correct keys", () => {
       return request(app)
@@ -190,6 +148,48 @@ describe("app", () => {
         .expect(404)
         .then((result) => {
           expect(result.body.msg).toBe("Not Found");
+        });
+    });
+  });
+
+  describe("GET /api/articles/:article_id", () => {
+    test("200: Should return an object with author, title, article_id, body, topic, created_at, votes, article_img_url and comment_count keys", () => {
+      const expectedOutput = {
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: "2020-07-09T20:11:00.000Z",
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        comment_count: 11,
+      };
+
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toMatchObject(expectedOutput);
+        });
+    });
+
+    test("400: Should respond with Bad Request if user enters invalid id", () => {
+      return request(app)
+        .get("/api/articles/invalid")
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toEqual("Bad Request");
+        });
+    });
+
+    test("404: Should respond with Not Found if user enters valid but non-existent id", () => {
+      return request(app)
+        .get("/api/articles/11111")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "Not Found" });
         });
     });
   });
