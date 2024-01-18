@@ -9,6 +9,7 @@ const {
   insertComment,
   updateArticleById,
   removeCommentById,
+  fetchUsers,
 } = require("../Models/news.models");
 
 module.exports.getTopics = (request, response, next) => {
@@ -17,11 +18,21 @@ module.exports.getTopics = (request, response, next) => {
   });
 };
 
-module.exports.getEndpoints = (require, response, next) => {
+module.exports.getEndpoints = (request, response, next) => {
   fetchEndpoints()
     .then((data) => {
       const parsedData = JSON.parse(data);
       response.status(200).send(parsedData);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports.getUsers = (request, response, next) => {
+  fetchUsers()
+    .then((users) => {
+      response.status(200).send({ users });
     })
     .catch((err) => {
       next(err);

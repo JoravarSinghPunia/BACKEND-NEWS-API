@@ -43,6 +43,31 @@ describe("app", () => {
     });
   });
 
+  describe("GET /api/users", () => {
+    test("200: Returns an array of user objects containing username, name and avatar url", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then((result) => {
+          expect(Array.isArray(result.body.users)).toBe(true);
+          expect(result.body.users.length).toBe(4);
+          result.body.users.forEach((user) => {
+            expect(user).toHaveProperty("username");
+            expect(user).toHaveProperty("name");
+            expect(user).toHaveProperty("avatar_url");
+          });
+        });
+    });
+    test('400: Respond with "Not Found" if user does not exist', () => {
+      return request(app)
+        .get("/api/InvalidUser")
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("Not Found");
+        });
+    });
+  });
+
   describe("GET /api/articles/:article_id", () => {
     test("200: Should return an object with author, title, article_id, body, topic, created_at, votes, article_img_url keys", () => {
       const expectedOutput = {
