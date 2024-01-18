@@ -89,13 +89,13 @@ module.exports.checkArticleExists = (article_id) => {
     });
 };
 
-exports.insertComment = (author, body, article_id) => {
+module.exports.insertComment = (author, body, article_id) => {
+  if (!author || !body || !article_id) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+
   return this.checkArticleExists(article_id)
     .then(() => {
-      if (!author || !body || !article_id) {
-        return Promise.reject({ status: 400, msg: "Bad Request" });
-      }
-
       return db.query(
         `
 INSERT INTO comments
@@ -111,9 +111,6 @@ RETURNING comment_id, body, article_id, author, votes, created_at;
       return rows[0];
     })
     .catch((err) => {
-      if (err.status === 404) {
-        return Promise.reject({ status: 404, msg: "Not Found" });
-      }
       return Promise.reject(err);
     });
 };
