@@ -111,3 +111,29 @@ RETURNING comment_id, body, article_id, author, votes, created_at;
       return Promise.reject(err);
     });
 };
+
+module.exports.updateArticleById = (body, params) => {
+  const { inc_votes } = body;
+  const { article_id } = params;
+
+  return db
+    .query(
+      `
+      UPDATE articles
+      SET
+        votes = votes + $1
+      WHERE articles.article_id = $2
+      RETURNING *;
+      `,
+      [inc_votes, article_id]
+    )
+    .then((article) => {
+      if (article.rows.length === 0) {
+        return Promise.reject({ msg: "Not Found" });
+      }
+      return article.rows[0];
+    })
+    .catch((err) => {
+      return Promise.reject(err);
+    });
+};

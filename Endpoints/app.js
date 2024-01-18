@@ -7,6 +7,7 @@ const {
   getAllArticles,
   getCommentsById,
   postCommentToArticleId,
+  patchArticleId,
 } = require("../Controllers/news.controllers");
 const {
   endpointErrors,
@@ -22,7 +23,10 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticlesByArticleID);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id/comments", getCommentsById);
+
 app.post("/api/articles/:article_id/comments", postCommentToArticleId);
+
+app.patch("/api/articles/:article_id", patchArticleId);
 
 app.all("*", endpointErrors);
 app.use(customErrors);
