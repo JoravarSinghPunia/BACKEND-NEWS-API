@@ -7,6 +7,7 @@ const {
   countCommentsByArticleId,
   fetchCommentsById,
   insertComment,
+  updateArticleById,
 } = require("../Models/news.models");
 
 module.exports.getTopics = (request, response, next) => {
@@ -58,13 +59,23 @@ module.exports.getCommentsById = (request, response, next) => {
     });
 };
 
-exports.postCommentToArticleId = (request, response, next) => {
+module.exports.postCommentToArticleId = (request, response, next) => {
   const { article_id } = request.params;
   const { username, body } = request.body;
 
   insertComment(username, body, article_id)
     .then((comments) => {
       response.status(201).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports.patchArticleId = (request, response, next) => {
+  updateArticleById(request.body, request.params)
+    .then((article) => {
+      response.status(200).send({ article });
     })
     .catch((err) => {
       next(err);

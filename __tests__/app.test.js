@@ -245,4 +245,113 @@ describe("app", () => {
         });
     });
   });
+
+  describe("PATCH /api/articles/:article_id", () => {
+    test("200: Should accept object in correct form with new vote, and return updated article with an increase in votes", () => {
+      const updatedVotes = { inc_votes: 75 };
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(updatedVotes)
+        .expect(200)
+        .then((result) => {
+          expect(result.body.article).toBeInstanceOf(Object);
+          expect(result.body.article).toHaveProperty("article_id", 1);
+          expect(result.body.article).toHaveProperty(
+            "title",
+            "Living in the shadow of a great man"
+          );
+          expect(result.body.article).toHaveProperty("topic", "mitch");
+          expect(result.body.article).toHaveProperty("author", "butter_bridge");
+          expect(result.body.article).toHaveProperty(
+            "body",
+            "I find this existence challenging"
+          );
+          expect(result.body.article).toHaveProperty(
+            "created_at",
+            "2020-07-09T20:11:00.000Z"
+          );
+          expect(result.body.article).toHaveProperty("votes", 175);
+          expect(result.body.article).toHaveProperty(
+            "article_img_url",
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
+        });
+    });
+    test("200: Should accept object in correct form with new vote, and return updated article with a decrease in votes", () => {
+      const updatedVotes = { inc_votes: -10 };
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(updatedVotes)
+        .expect(200)
+        .then((result) => {
+          expect(result.body.article).toBeInstanceOf(Object);
+          expect(result.body.article).toHaveProperty("article_id", 1);
+          expect(result.body.article).toHaveProperty(
+            "title",
+            "Living in the shadow of a great man"
+          );
+          expect(result.body.article).toHaveProperty("topic", "mitch");
+          expect(result.body.article).toHaveProperty("author", "butter_bridge");
+          expect(result.body.article).toHaveProperty(
+            "body",
+            "I find this existence challenging"
+          );
+          expect(result.body.article).toHaveProperty(
+            "created_at",
+            "2020-07-09T20:11:00.000Z"
+          );
+          expect(result.body.article).toHaveProperty("votes", 90);
+          expect(result.body.article).toHaveProperty(
+            "article_img_url",
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
+        });
+    });
+    test("404: Returns 'Not Found' if article does not exist", () => {
+      const updatedVotes = { inc_votes: 75 };
+
+      return request(app)
+        .patch("/api/articles/99999")
+        .send(updatedVotes)
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("Not Found");
+        });
+    });
+    test("400: Returns 'Bad Request' if formatting of article is incorrect", () => {
+      const updatedVotes = { inc_votes: 75 };
+
+      return request(app)
+        .patch("/api/articles/dfdsf")
+        .send(updatedVotes)
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("Bad Request");
+        });
+    });
+    test("400: Returns 'Bad Request' if key is incorrect", () => {
+      const updatedVotes = { not_votes: 75, invalidKey: "invalid" };
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(updatedVotes)
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("Bad Request");
+        });
+    });
+    test("400: Returns 'Bad Request' if object value is incorrect", () => {
+      const updatedVotes = { inc_votes: undefined };
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(updatedVotes)
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("Bad Request");
+        });
+    });
+  });
 });
