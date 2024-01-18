@@ -8,6 +8,7 @@ const {
   fetchCommentsById,
   insertComment,
   updateArticleById,
+  removeCommentById,
 } = require("../Models/news.models");
 
 module.exports.getTopics = (request, response, next) => {
@@ -73,9 +74,24 @@ module.exports.postCommentToArticleId = (request, response, next) => {
 };
 
 module.exports.patchArticleId = (request, response, next) => {
-  updateArticleById(request.body, request.params)
+  const updatedVotesData = request.body;
+  const articleIdParams = request.params;
+
+  updateArticleById(updatedVotesData, articleIdParams)
     .then((article) => {
       response.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports.deleteCommentById = (request, response, next) => {
+  const commentIdData = request.params;
+
+  removeCommentById(commentIdData)
+    .then(() => {
+      response.status(204).send();
     })
     .catch((err) => {
       next(err);
