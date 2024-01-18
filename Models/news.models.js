@@ -13,6 +13,12 @@ module.exports.fetchEndpoints = () => {
   });
 };
 
+module.exports.fetchUsers = () => {
+  return db.query(`SELECT * FROM users`).then((users) => {
+    return users.rows;
+  });
+};
+
 module.exports.fetchArticlesByID = (article_id) => {
   return db
     .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
