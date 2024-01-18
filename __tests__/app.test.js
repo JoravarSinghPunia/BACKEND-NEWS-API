@@ -65,7 +65,7 @@ describe("app", () => {
         });
     });
 
-    test("400: Should respond with Invalid ID if user enters invalid id entered", () => {
+    test("400: Should respond with Bad Request if user enters invalid id", () => {
       return request(app)
         .get("/api/articles/invalid")
         .expect(400)
@@ -320,11 +320,11 @@ describe("app", () => {
           expect(result.body.msg).toBe("Not Found");
         });
     });
-    test("400: Returns 'Bad Request' if formatting of article is incorrect", () => {
+    test("400: Returns 'Bad Request' when invalid article id entered", () => {
       const updatedVotes = { inc_votes: 75 };
 
       return request(app)
-        .patch("/api/articles/dfdsf")
+        .patch("/api/articles/INVALID")
         .send(updatedVotes)
         .expect(400)
         .then((result) => {
@@ -351,6 +351,33 @@ describe("app", () => {
         .expect(400)
         .then((result) => {
           expect(result.body.msg).toBe("Bad Request");
+        });
+    });
+  });
+
+  describe("DELETE /api/comments/:comment_id", () => {
+    test("204: Responds with 'No Content' and deleted comment by comment_id", () => {
+      return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
+        .then((result) => {
+          expect(result.res.statusMessage).toBe("No Content");
+        });
+    });
+    test("400: Respond with 'Bad Request' Bad Request if user enters invalid id", () => {
+      return request(app)
+        .delete("/api/comments/INVALID")
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("Bad Request");
+        });
+    });
+    test("404: Responds with 'Not Found' if enters valid but non-existent id", () => {
+      return request(app)
+        .delete("/api/comments/9999")
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("Not Found");
         });
     });
   });
