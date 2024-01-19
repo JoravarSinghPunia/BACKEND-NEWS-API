@@ -10,13 +10,13 @@ const {
   postCommentToArticleId,
   patchArticleId,
   deleteCommentById,
-} = require("../Controllers/news.controllers");
+} = require("./Controllers/news.controllers");
 const {
   endpointErrors,
   psqlErrors,
   customErrors,
   serverErrors,
-} = require("../Errors/errorHandler");
+} = require("./Errors/errorHandler");
 
 app.use(express.json());
 

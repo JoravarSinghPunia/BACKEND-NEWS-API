@@ -1,4 +1,4 @@
-const app = require("../Endpoints/app");
+const app = require("../app");
 
 module.exports.endpointErrors = (req, res) => {
   res.status(404).send({ msg: "Not Found" });
