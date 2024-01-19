@@ -17,6 +17,7 @@ jobs:
         run: npm test utils
 
   test-app-file:
+    needs: test-utils-file
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and clone repo
@@ -24,10 +25,10 @@ jobs:
       - name: Setup PSQL
         uses: harmon758/postgresql-action@v1
         with:
-          postgresql-db: nc_news_db
-          postgresql-user: mr_test
-          postgresql-password: pa55word
+          postgresql db: nc_news_db
+          postgresql user: mr_testymctest
+          postgresql password: pa55word
       - name: Install dependencies
         run: npm install
-      - name: Test app
-        run: PGDATABASE=nc_news_db PGUSER=mr_test PGPASSWORD=pa55word npm test
+      - name: Test app file
+        run: PGDATABASE=nc_news_db PGUSER=mr_testymctest PGPASSWORD=pa55word npm test
