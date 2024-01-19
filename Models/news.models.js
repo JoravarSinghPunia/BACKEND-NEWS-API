@@ -1,25 +1,25 @@
 const db = require("../db/connection");
 const fs = require("fs/promises");
 
-module.exports.fetchTopicsData = () => {
+exports.fetchTopicsData = () => {
   return db.query(`SELECT * FROM topics;`).then((result) => {
     return result.rows;
   });
 };
 
-module.exports.fetchEndpoints = () => {
+exports.fetchEndpoints = () => {
   return fs.readFile(`${__dirname}/../endpoints.json`, "utf8").then((data) => {
     return data;
   });
 };
 
-module.exports.fetchUsers = () => {
+exports.fetchUsers = () => {
   return db.query(`SELECT * FROM users`).then((users) => {
     return users.rows;
   });
 };
 
-module.exports.fetchArticlesByID = (article_id) => {
+exports.fetchArticlesByID = (article_id) => {
   return db
     .query(
       `SELECT *, CAST((SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id) AS INTEGER) AS comment_count
@@ -36,7 +36,7 @@ module.exports.fetchArticlesByID = (article_id) => {
     });
 };
 
-module.exports.fetchAllArticles = (topic) => {
+exports.fetchAllArticles = (topic) => {
   const queryValues = [];
   let sqlQuery = `
   SELECT author, title, article_id, topic, created_at, votes, article_img_url, CAST((SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id) AS INTEGER) AS comment_count FROM articles
@@ -54,7 +54,7 @@ module.exports.fetchAllArticles = (topic) => {
   });
 };
 
-module.exports.checkTopicExists = (topic) => {
+exports.checkTopicExists = (topic) => {
   return db
     .query(
       `
@@ -69,11 +69,7 @@ module.exports.checkTopicExists = (topic) => {
     });
 };
 
-module.exports.fetchAllArticles = (
-  topic,
-  sort_by = "created_at",
-  order = "desc"
-) => {
+exports.fetchAllArticles = (topic, sort_by = "created_at", order = "desc") => {
   const queryValues = [];
   const validSortByQueries = [
     "created_at",
@@ -110,7 +106,7 @@ module.exports.fetchAllArticles = (
   });
 };
 
-module.exports.countCommentsByArticleId = (article_id) => {
+exports.countCommentsByArticleId = (article_id) => {
   return db
     .query("SELECT COUNT(comment_id) FROM comments WHERE article_id = $1", [
       article_id,
@@ -120,7 +116,7 @@ module.exports.countCommentsByArticleId = (article_id) => {
     });
 };
 
-module.exports.fetchCommentsById = (article_id) => {
+exports.fetchCommentsById = (article_id) => {
   return this.checkArticleExists(article_id)
     .then(() => {
       return db
@@ -141,7 +137,7 @@ module.exports.fetchCommentsById = (article_id) => {
     });
 };
 
-module.exports.checkArticleExists = (article_id) => {
+exports.checkArticleExists = (article_id) => {
   return db
     .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
     .then((result) => {
@@ -151,7 +147,7 @@ module.exports.checkArticleExists = (article_id) => {
     });
 };
 
-module.exports.insertComment = (author, body, article_id) => {
+exports.insertComment = (author, body, article_id) => {
   if (!author || !body || !article_id) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
   }
@@ -174,7 +170,7 @@ RETURNING comment_id, body, article_id, author, votes, created_at;
     });
 };
 
-module.exports.updateArticleById = (body, params) => {
+exports.updateArticleById = (body, params) => {
   const { inc_votes } = body;
   const { article_id } = params;
 
@@ -200,7 +196,7 @@ module.exports.updateArticleById = (body, params) => {
     });
 };
 
-module.exports.removeCommentById = (requestParams) => {
+exports.removeCommentById = (requestParams) => {
   return db
     .query(
       `

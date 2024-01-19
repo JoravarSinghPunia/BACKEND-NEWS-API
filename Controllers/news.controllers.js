@@ -1,4 +1,3 @@
-const { request } = require("../Endpoints/app");
 const {
   fetchTopicsData,
   fetchEndpoints,
@@ -12,13 +11,13 @@ const {
   checkTopicExists,
 } = require("../Models/news.models");
 
-module.exports.getTopics = (request, response, next) => {
+exports.getTopics = (request, response, next) => {
   fetchTopicsData().then((topics) => {
     response.status(200).send({ topics });
   });
 };
 
-module.exports.getEndpoints = (request, response, next) => {
+exports.getEndpoints = (request, response, next) => {
   fetchEndpoints()
     .then((data) => {
       const parsedData = JSON.parse(data);
@@ -29,7 +28,7 @@ module.exports.getEndpoints = (request, response, next) => {
     });
 };
 
-module.exports.getUsers = (request, response, next) => {
+exports.getUsers = (request, response, next) => {
   fetchUsers()
     .then((users) => {
       response.status(200).send({ users });
@@ -39,7 +38,7 @@ module.exports.getUsers = (request, response, next) => {
     });
 };
 
-module.exports.getArticlesByArticleID = (request, response, next) => {
+exports.getArticlesByArticleID = (request, response, next) => {
   const { article_id } = request.params;
   fetchArticlesByID(article_id)
     .then((article) => {
@@ -71,7 +70,7 @@ exports.getAllArticles = (request, response, next) => {
     });
 };
 
-module.exports.getCommentsById = (request, response, next) => {
+exports.getCommentsById = (request, response, next) => {
   const { article_id } = request.params;
   fetchCommentsById(article_id)
     .then((comments) => {
@@ -82,7 +81,7 @@ module.exports.getCommentsById = (request, response, next) => {
     });
 };
 
-module.exports.postCommentToArticleId = (request, response, next) => {
+exports.postCommentToArticleId = (request, response, next) => {
   const { article_id } = request.params;
   const { username, body } = request.body;
 
@@ -95,7 +94,7 @@ module.exports.postCommentToArticleId = (request, response, next) => {
     });
 };
 
-module.exports.patchArticleId = (request, response, next) => {
+exports.patchArticleId = (request, response, next) => {
   const updatedVotesData = request.body;
   const articleIdParams = request.params;
 
@@ -108,7 +107,7 @@ module.exports.patchArticleId = (request, response, next) => {
     });
 };
 
-module.exports.deleteCommentById = (request, response, next) => {
+exports.deleteCommentById = (request, response, next) => {
   const commentIdData = request.params;
 
   removeCommentById(commentIdData)
