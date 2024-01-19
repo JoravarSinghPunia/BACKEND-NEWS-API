@@ -36,24 +36,6 @@ exports.fetchArticlesByID = (article_id) => {
     });
 };
 
-exports.fetchAllArticles = (topic) => {
-  const queryValues = [];
-  let sqlQuery = `
-  SELECT author, title, article_id, topic, created_at, votes, article_img_url, CAST((SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id) AS INTEGER) AS comment_count FROM articles
-  `;
-  if (topic !== undefined) {
-    sqlQuery += ` WHERE topic = $1 `;
-    queryValues.push(topic);
-  }
-
-  sqlQuery += ` ORDER BY created_at DESC `;
-
-  return db.query(sqlQuery, queryValues).then((response) => {
-    const { rows } = response;
-    return rows;
-  });
-};
-
 exports.checkTopicExists = (topic) => {
   return db
     .query(
@@ -66,6 +48,9 @@ exports.checkTopicExists = (topic) => {
     .then(({ rows }) => {
       if (rows.length === 0)
         return Promise.reject({ status: 404, msg: "Not Found" });
+    })
+    .catch((err) => {
+      return Promise.reject(err);
     });
 };
 
