@@ -12,7 +12,7 @@
   },
 
   "GET /api/users": {
-    "description": "An array of objects containing username, name and avatar_url",
+    "description": "Serves an array of objects containing username, name and avatar_url",
     "exampleResponse": {
       "body": {
         "users": [
@@ -45,7 +45,7 @@
   },
 
   "GET /api/articles/:article_id": {
-    "description": "Responds with an article object by article Id",
+    "description": "serves an article object by article id",
     "queries": [],
     "exampleResponse": {
       "article": {
@@ -62,7 +62,7 @@
   },
 
   "GET /api/articles/:article_id/comments": {
-    "description": "Responds with an array of comments for given article_id requested with the most recent first",
+    "description": "Serves an array of comments for given article_id requested with the most recent first",
     "exampleResponse": {
       "comments": [
         {
@@ -108,5 +108,10 @@
         "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       }
     }
+  },
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes the given comment by `comment_id`. Responds with status 204 and no content.",
+    "queries": []
   }
 }

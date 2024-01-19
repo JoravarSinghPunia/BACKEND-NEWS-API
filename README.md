@@ -84,6 +84,22 @@ Once seeded, you can test the endpoints. To do so, run this command:
 npm test app
 ```
 
+## **Endpoints**
+
+Below is a list of all valid endpoints:
+
+| Endpoints                                   | Description                                                                           |
+| :------------------------------------------ | :------------------------------------------------------------------------------------ |
+| **GET** /api                                | Serves up a json representation of all the available endpoints of the api             |
+| **GET** /api/topics                         | Serves an array of all topics                                                         |
+| **GET** /api/users                          | Serves an array of objects containing username, name and avatar_url                   |
+| **GET** /api/articles                       | serves an array of all articles                                                       |
+| **GET** /api/articles/:article_id           | Serves an article object by article id                                                |
+| **GET** /api/articles/:article_id/comments  | Serves an array of comments for given article_id requested with the most recent first |
+| **POST** /api/articles/:article_id/comments | Adds comment to comment database and serves the added comment                         |
+| **PATCH** /api/articles/:article_id         | Updates article with new vote by article ID                                           |
+| **DELETE** /api/comments/:comment_id        | Deletes the comment by comment_id                                                     |
+
 ### **If all tests pass, the API is ready to be deployed.**
 
 **Node & PSQL versions**
