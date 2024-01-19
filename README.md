@@ -17,7 +17,7 @@ The backend news API is a service built for the purpose of accessing application
 In order to see the backend API, you can fork and clone the repository using the git clone command in your terminal. This should be run in the directory where you want to save it.
 
 ```JavaScript
-git clone https://github.com/JoravarSinghPunia/NC-GAMES-API
+git clone https://github.com/JoravarSinghPunia/BACKEND-NEWS-API.git
 ```
 
 Note: Forking the repository will require you to use the link provided from the forked repo.
