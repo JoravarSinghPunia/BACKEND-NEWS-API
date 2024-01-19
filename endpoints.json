@@ -1,3 +1,4 @@
+Endpoints: {
 {
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
@@ -114,4 +115,5 @@
     "description": "Deletes the given comment by `comment_id`. Responds with status 204 and no content.",
     "queries": []
   }
+}
 }
