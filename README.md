@@ -2,9 +2,9 @@
 
 ## **Links**
 
-You can access the live version of this API here.
+You can access the live version of this API [here](https://backend-news-api-rzxs.onrender.com).
 
-To explore the endpoints in further detail, you can refer to the endpoints.json file
+To explore the endpoints in further detail, you can refer to the [endpoints.json](/endpoints.json) file
 
 ## **About**
 
