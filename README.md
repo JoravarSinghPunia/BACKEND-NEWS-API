@@ -1,4 +1,4 @@
-# **Backend games API**
+# **Backend News API**
 
 ## **Links**
 
