@@ -1,7 +1,7 @@
 const app = require("./app");
 const express = require("express");
 
-const { PORT = 9090 } = process.env;
+const { PORT = 10000 } = process.env;
 const server = express();
 
 server.use("/", app);
