@@ -68,9 +68,28 @@ npm run setup-dbs
 
 You will need to create two .env files:
 
-.env.test and .env.development
+```bash
+.env.development
+```
+and
 
-Into each, add PGDATABASE=database_name with the correct database name for that environment (see /db/setup.sql for the database names).
+```bash
+.env.test
+```
+
+Into the .env.development file add the following:
+
+```bash
+PGDATABASE=database_name
+```
+
+And into the .env.test file add the following:
+
+```bash
+PGDATABASE=database_name_test
+```
+
+database_name must be replaced with the correct database name for the environment (see /db/setup.sql for the database names).
 
 ### **Run the tests**
 
