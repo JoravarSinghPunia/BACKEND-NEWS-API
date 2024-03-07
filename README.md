@@ -6,6 +6,8 @@ You can access the live version of this API [here](https://backend-news-api-rzxs
 
 To explore the endpoints in further detail, you can refer to the [endpoints.json](/endpoints.json) file
 
+**Please Note:** This API may take up to 10 minutes to load as it is hosted with Render, and loading times are dependent on when the link was last opened.
+
 ## **About**
 
 The backend news API is a service built for the purpose of accessing application data programmatically. Modelled after real world backend services, such as Reddit, this api will deliver information to the front end architecture. The project uses [PSQL](https://www.postgresql.org/) to setup the database of articles, and HTTP endpoints using [express](https://expressjs.com/). This is now live and being hosted on [ElephantSQL](https://www.elephantsql.com/) with deployment on [Render](https://render.com/).
